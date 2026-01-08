@@ -8,7 +8,9 @@ import TrendingKeywords from "../components/dashboard/TrendingKeywords";
 import TodaysSpecial from "../components/dashboard/TodaysSpecial";
 import DeliveryMap from "../components/dashboard/DeliveryMap";
 import UpcomingShippingSchedule from "../components/dashboard/UpcomingShippingSchedule";
-import { ShoppingBag, Truck, Clock, DollarSign } from 'lucide-react';
+import Overview from "../components/dashboard/Overview";
+import TopSellingItems from "../components/dashboard/TopSellingItems";
+import { ShoppingBag, Package, Clock, DollarSign } from 'lucide-react';
 
 export default function Dashboard() {
   return (
@@ -21,42 +23,52 @@ export default function Dashboard() {
       {/* Stats Cards Row */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
         <StatsCard
-          icon={ShoppingBag}
-          value="89"
-          label="Total Order"
+          label="Total Orders" 
+          value="1,893" 
+          icon={ShoppingBag} 
+          percentage={65} 
+          color="orange"
           trend="up"
-          trendValue="3%"
-          iconColor="text-gray-700 dark:text-white"
-          iconBg="bg-gray-100 dark:bg-slate-700"
+          trendValue="+8.2%"
         />
         <StatsCard
-          icon={Truck}
-          value="899"
-          label="Total Delivered"
+         label="Pending Deliveries" 
+          value="45" 
+          icon={Package} 
+          percentage={92} 
+          color="teal"
           trend="up"
-          trendValue="8%"
-          iconColor="text-gray-700 dark:text-white"
-          iconBg="bg-gray-100 dark:bg-slate-700"
+          trendValue="+5.3%"
         />
         <StatsCard
-          icon={Clock}
-          value="59"
           label="Total Cancelled"
+          value="59"
+          icon={Clock}
+          percentage={12}
+          color="red"
           trend="down"
           trendValue="2%"
-          iconColor="text-gray-700 dark:text-white"
-          iconBg="bg-gray-100 dark:bg-slate-700"
         />
         <StatsCard
-          icon={DollarSign}
-          value="$789k"
-          label="Total Revenue"
-          trend="down"
-          trendValue="12%"
-          iconColor="text-gray-700 dark:text-white"
-          iconBg="bg-gray-100 dark:bg-slate-700"
+          label="Total Revenue" 
+          value="$54,239" 
+          icon={DollarSign} 
+          percentage={78} 
+          color="indigo"
+          trend="up"
+          trendValue="+12.5%"
         />
       </div>
+
+      {/* Overview & Top Selling Section */}
+     <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+  <div className="lg:col-span-2">
+    <Overview />
+  </div>
+  <div>
+    <TopSellingItems />
+  </div>
+</div>
 
       {/* Charts Row */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">

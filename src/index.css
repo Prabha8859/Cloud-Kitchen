@@ -1,103 +1,37 @@
 @import "tailwindcss";
 
 @variant dark (&:where(.dark, .dark *));
+/* @tailwind base;
+@tailwind components;
+@tailwind utilities; */
 
 @layer base {
   :root {
-    /* 🎨 COLORS */
-    --color-primary: 79 70 229;     /* indigo-600 */
-    --color-success: 34 197 94;     /* green-500 */
-    --color-warning: 234 179 8;     /* yellow-500 */
-    --color-danger: 239 68 68;      /* red-500 */
-
-    --color-bg: 243 244 246;        /* gray-100 */
-    --color-card: 255 255 255;      /* white */
-    --color-text: 17 24 39;         /* gray-900 */
-    --color-muted: 107 114 128;     /* gray-500 */
-
-    /* 📏 SIZING */
-    --page-padding: 1.5rem;         /* p-6 */
-    --card-padding: 1rem;           /* p-4 */
-    --section-gap: 1.5rem;          /* gap-6 */
+    /* Primary Brand Color (Orange) */
+    --color-primary: 249 115 22; 
+    /* Secondary Brand Color (Blue) */
+    --color-secondary: 59 130 246;
+    /* Status Colors */
+    --color-success: 16 185 129;
+    --color-danger: 239 68 68;
+    --color-warning: 245 158 11;
   }
 }
-
 
 @layer components {
-
-  /*  Page Wrapper */
-  .page-container {
-    @apply bg-gray-100 min-h-screen p-6;
+  .card-base {
+    @apply bg-white dark:bg-slate-800 rounded-2xl p-6 shadow-sm border border-gray-100 dark:border-slate-700 transition-all duration-300;
+  }
+  
+  .card-hover {
+    @apply hover:shadow-lg hover:-translate-y-1;
   }
 
-  /* Page Title */
-  .page-title {
-    @apply text-2xl font-semibold text-gray-900;
-  }
-
-  /* Page Subtitle / Span */
-  .page-subtitle {
-    @apply text-sm text-gray-500 mt-1;
-  }
-
-  /*   Section Title */
-  .section-title {
-    @apply text-lg font-medium text-gray-800 mb-4;
-  }
-
-  /* Card */
-  .card {
-    background-color: rgb(var(--color-card));
-    padding: var(--card-padding);
-    @apply rounded-lg shadow;
-  }
-
-  /* Card Label */
-  .card-label {
-    @apply text-sm text-gray-500;
-  }
-
-  /* Card Value */
-  .card-value {
-    @apply text-2xl font-bold text-gray-900;
-  }
-
-  /* Badge */
-  .badge {
-    @apply inline-flex items-center px-2 py-1 rounded text-xs font-medium;
-  }
-
-  .badge-success {
-    background-color: rgb(var(--color-success) / 0.1);
-    color: rgb(var(--color-success));
-  }
-
-  .badge-warning {
-    background-color: rgb(var(--color-warning) / 0.1);
-    color: rgb(var(--color-warning));
-  }
-
-  .badge-danger {
-    background-color: rgb(var(--color-danger) / 0.1);
-    color: rgb(var(--color-danger));
-  }
-}
-
-@layer utilities {
   .no-scrollbar::-webkit-scrollbar {
     display: none;
   }
   .no-scrollbar {
-    -ms-overflow-style: none;  /* IE and Edge */
-    scrollbar-width: none;  /* Firefox */
-  }
-
-  @keyframes fadeInUp {
-    from { opacity: 0; transform: translateY(20px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
-
-  .animate-fade-in-up {
-    animation: fadeInUp 0.5s ease-out forwards;
+    -ms-overflow-style: none;
+    scrollbar-width: none;
   }
 }

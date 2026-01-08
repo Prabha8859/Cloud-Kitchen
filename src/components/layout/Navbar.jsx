@@ -1,20 +1,22 @@
 import { Search, Bell, User, Menu, Settings } from 'lucide-react';
 import { useState } from 'react';
+import { useAuth } from '../../hooks/useAuth';
 import ThemeToggle from './ThemeToggle';
 import Input from '../UI/Input';
 
-export default function Navbar() {
+export default function Navbar({ onMenuClick }) {
+  const { user, logout } = useAuth();
   const [showNotifications, setShowNotifications] = useState(false);
   const [showProfile, setShowProfile] = useState(false);
 
   return (
     <nav className="bg-white dark:bg-slate-800 border-b border-gray-200 dark:border-slate-700 shadow-sm sticky top-0 z-40 transition-colors duration-200">
-      <div className="px-6 py-4">
+      <div className="px-4 sm:px-6 py-3">
         <div className="flex items-center justify-between">
           {/* Left Section - Search */}
           <div className="flex items-center gap-4 flex-1">
-            <button type="button" className="lg:hidden p-2 hover:bg-gray-100 dark:hover:bg-slate-700 rounded-lg transition-colors">
-              <Menu className="w-5 h-5 text-gray-600 dark:text-gray-300" />
+            <button type="button" onClick={onMenuClick} className="lg:hidden p-2 hover:bg-gray-100 dark:hover:bg-slate-700 rounded-lg transition-colors">
+              <Menu className="w-6 h-6 text-gray-600 dark:text-gray-300" />
             </button>
             
             <div className="relative max-w-md w-full">
@@ -28,7 +30,7 @@ export default function Navbar() {
           </div>
 
           {/* Right Section - Actions */}
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-1 sm:gap-3">
             {/* Theme Toggle Component */}
             <ThemeToggle />
 
@@ -50,7 +52,7 @@ export default function Navbar() {
 
               {/* Notifications Dropdown */}
               {showNotifications && (
-                <div className="absolute right-0 mt-2 w-80 bg-white dark:bg-slate-800 rounded-xl shadow-xl border border-gray-200 dark:border-slate-700 py-2 z-50">
+                <div className="card-base absolute right-0 mt-2 w-80 z-50 p-0 py-2">
                   <div className="px-4 py-3 border-b border-gray-100 dark:border-slate-700">
                     <h3 className="font-semibold text-gray-800 dark:text-white">Notifications</h3>
                     <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">You have 3 unread messages</p>
@@ -96,17 +98,17 @@ export default function Navbar() {
                   <User className="w-5 h-5 text-white" />
                 </div>
                 <div className="hidden md:block text-left">
-                  <p className="text-sm font-semibold text-gray-800 dark:text-white">Admin User</p>
-                  <p className="text-xs text-gray-500 dark:text-gray-400">Super Admin</p>
+                  <p className="text-sm font-semibold text-gray-800 dark:text-white">{user?.name || 'Admin User'}</p>
+                  <p className="text-xs text-gray-500 dark:text-gray-400 capitalize">{user?.role?.replace('-', ' ') || 'Admin'}</p>
                 </div>
               </button>
 
               {/* Profile Dropdown */}
               {showProfile && (
-                <div className="absolute right-0 mt-2 w-64 bg-white dark:bg-slate-800 rounded-xl shadow-xl border border-gray-200 dark:border-slate-700 py-2 z-50">
+                <div className="card-base absolute right-0 mt-2 w-64 z-50 p-0 py-2">
                   <div className="px-4 py-3 border-b border-gray-100 dark:border-slate-700">
-                    <p className="font-semibold text-gray-800 dark:text-white">Admin User</p>
-                    <p className="text-sm text-gray-500 dark:text-gray-400">admin@foodhub.com</p>
+                    <p className="font-semibold text-gray-800 dark:text-white">{user?.name || 'Admin User'}</p>
+                    <p className="text-sm text-gray-500 dark:text-gray-400">{user?.email || 'admin@foodhub.com'}</p>
                   </div>
                   <div className="py-2">
                     <button className="w-full px-4 py-2 text-left text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-slate-700 transition-colors">
@@ -120,7 +122,10 @@ export default function Navbar() {
                     </button>
                   </div>
                   <div className="border-t border-gray-100 dark:border-slate-700 pt-2">
-                    <button className="w-full px-4 py-2 text-left text-sm text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors">
+                    <button 
+                      onClick={logout}
+                      className="w-full px-4 py-2 text-left text-sm text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors"
+                    >
                       Logout
                     </button>
                   </div>

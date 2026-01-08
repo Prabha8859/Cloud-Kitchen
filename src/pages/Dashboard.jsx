@@ -1,6 +1,6 @@
 import DashboardLayout from "../components/layout/DashboardLayout";
 import PageHeader from "../components/UI/PageHeader";
-import StatsCard from "../components/dashboard/StatsCard";
+import StatsCard from "../components/UI/StatsCard"; // Updated Import
 import DailyRevenueChart from "../components/dashboard/DailyRevenueChart";
 import CustomerFlowChart from "../components/dashboard/CustomerFlowChart";
 import CustomerReview from "../components/dashboard/CustomerReview";
@@ -21,13 +21,13 @@ export default function Dashboard() {
       />
 
       {/* Stats Cards Row */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-6 md:mb-8">
         <StatsCard
           label="Total Orders" 
           value="1,893" 
           icon={ShoppingBag} 
           percentage={65} 
-          color="orange"
+          color="primary"
           trend="up"
           trendValue="+8.2%"
         />
@@ -36,7 +36,7 @@ export default function Dashboard() {
           value="45" 
           icon={Package} 
           percentage={92} 
-          color="teal"
+          color="info"
           trend="up"
           trendValue="+5.3%"
         />
@@ -45,7 +45,7 @@ export default function Dashboard() {
           value="59"
           icon={Clock}
           percentage={12}
-          color="red"
+          color="danger"
           trend="down"
           trendValue="2%"
         />
@@ -54,14 +54,14 @@ export default function Dashboard() {
           value="$54,239" 
           icon={DollarSign} 
           percentage={78} 
-          color="indigo"
+          color="secondary"
           trend="up"
           trendValue="+12.5%"
         />
       </div>
 
       {/* Overview & Top Selling Section */}
-     <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+     <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6 md:mb-8">
   <div className="lg:col-span-2">
     <Overview />
   </div>
@@ -71,13 +71,13 @@ export default function Dashboard() {
 </div>
 
       {/* Charts Row */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6 md:mb-8">
         <DailyRevenueChart />
         <CustomerFlowChart />
       </div>
 
       {/* Customer Reviews */}
-      <div className="mb-6">
+      <div className="mb-6 md:mb-8">
         <CustomerReview />
       </div>
 

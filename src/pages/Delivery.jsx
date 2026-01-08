@@ -27,8 +27,8 @@ export default function Delivery() {
       />
       
       <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 overflow-hidden">
-        <div className="overflow-x-auto">
-          <table className="w-full text-left text-sm text-slate-600 dark:text-slate-300">
+        <div className="overflow-x-auto w-full">
+          <table className="w-full min-w-[1000px] text-left text-sm text-slate-600 dark:text-slate-300">
             <thead className="bg-slate-50 dark:bg-slate-700/50 text-slate-900 dark:text-white font-semibold border-b border-slate-200 dark:border-slate-700">
               <tr>
                 <th className="px-6 py-4">Rider Name</th>

@@ -1,4 +1,7 @@
 import { Routes, Route, Navigate } from "react-router-dom";
+import { AuthProvider } from "../hooks/useAuth";
+import ProtectedRoute from "../pages/ProtectedRoute";
+import LoginPage from "../pages/LoginPage";
 import Dashboard from "../pages/Dashboard";
 import Kitchens from "../pages/Kitchens";
 import Orders from "../pages/Orders";
@@ -8,16 +11,32 @@ import Delivery from "../pages/Delivery";
 
 export default function AppRoutes() {
   return (
-    <Routes>
-      <Route path="/" element={<Navigate to="/dashboard" replace />} />
-      <Route path="/dashboard" element={<Dashboard />} />
-      <Route path="/societies" element={<Societies />} />
-      <Route path="/kitchens" element={<Kitchens />} />
-      <Route path="/orders" element={<Orders />} />
-      <Route path="/subscriptions" element={<Subscriptions />} />
-      <Route path="/delivery" element={<Delivery />} />
-      {/* Fallback route */}
-      <Route path="*" element={<Navigate to="/dashboard" replace />} />
-    </Routes>
+    <AuthProvider>
+      <Routes>
+        <Route path="/login" element={<LoginPage />} />
+        <Route path="/" element={<Navigate to="/dashboard" replace />} />
+        
+        <Route path="/dashboard" element={
+          <ProtectedRoute><Dashboard /></ProtectedRoute>
+        } />
+        <Route path="/societies" element={
+          <ProtectedRoute><Societies /></ProtectedRoute>
+        } />
+        <Route path="/kitchens" element={
+          <ProtectedRoute><Kitchens /></ProtectedRoute>
+        } />
+        <Route path="/orders" element={
+          <ProtectedRoute><Orders /></ProtectedRoute>
+        } />
+        <Route path="/subscriptions" element={
+          <ProtectedRoute><Subscriptions /></ProtectedRoute>
+        } />
+        <Route path="/delivery" element={
+          <ProtectedRoute><Delivery /></ProtectedRoute>
+        } />
+        {/* Fallback route */}
+        <Route path="*" element={<Navigate to="/dashboard" replace />} />
+      </Routes>
+    </AuthProvider>
   );
 }

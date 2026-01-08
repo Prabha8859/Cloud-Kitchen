@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
+import { useAuth } from '../../hooks/useAuth';
 import { 
   ChefHat, 
   ChevronDown,
@@ -100,8 +101,9 @@ const SidebarItem = ({ item, isActive, isExpanded, onClick, onSubItemClick, curr
   );
 };
 
-export default function Sidebar() {
+export default function Sidebar({ isMobileOpen, onClose }) {
   const navigate = useNavigate();
+  const { logout } = useAuth();
   const location = useLocation();
   const [expandedMenu, setExpandedMenu] = useState(null);
   // Persist collapsed state in localStorage
@@ -138,7 +140,18 @@ export default function Sidebar() {
   };
 
   return (
-    <div className={`hidden md:flex ${isCollapsed ? 'w-20' : 'w-72'} h-screen sticky top-0 flex-col bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 text-white shadow-2xl transition-all duration-300`}>
+    <>
+      {/* Mobile Overlay */}
+      {isMobileOpen && (
+        <div 
+          className="fixed inset-0 bg-black/50 z-50 lg:hidden"
+          onClick={onClose}
+        ></div>
+      )}
+
+      {/* Sidebar */}
+      <div className={`fixed lg:sticky top-0 h-screen z-50 flex-col bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 text-white shadow-2xl transition-all duration-300
+        ${isCollapsed ? 'w-20' : 'w-72'} ${isMobileOpen ? 'flex' : 'hidden'} lg:flex`}>
       {/* --- Header Section --- */}
       <div className={`p-6 border-b border-slate-700/50 flex items-center ${isCollapsed ? 'justify-center' : 'justify-between'}`}>
         
@@ -199,6 +212,7 @@ export default function Sidebar() {
           )}
           
           <button 
+            onClick={logout}
             className={`
               p-2 rounded-lg text-slate-400 hover:text-white hover:bg-red-500/20 hover:border-red-500/50 border border-transparent transition-all
               ${isCollapsed ? '' : 'bg-slate-800/50'}
@@ -209,6 +223,7 @@ export default function Sidebar() {
           </button>
         </div>
       </div>
-    </div>
+      </div>
+    </>
   );
 }

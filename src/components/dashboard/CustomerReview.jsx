@@ -1,5 +1,9 @@
-import { useRef, useEffect } from 'react';
-import { ChevronLeft, ChevronRight, Star } from 'lucide-react';
+import { useRef, useEffect, useState } from 'react';
+import { ChevronLeft, ChevronRight, Star, Edit } from 'lucide-react';
+import Modal from '../UI/Modal';
+import Button from '../UI/Button';
+import Input from '../UI/Input';
+import Textarea from '../UI/Textarea';
 
 const reviews = [
   {
@@ -29,7 +33,7 @@ const reviews = [
 ];
 
 const ReviewCard = ({ review }) => (
-  <div className="snap-start w-full md:w-[calc(33.333%-1rem)] flex-shrink-0 bg-gray-50 dark:bg-slate-700/40 rounded-2xl p-6 border border-gray-100 dark:border-slate-700 shadow-lg hover:shadow-xl transition-all duration-300">
+  <div className="snap-start w-full md:w-[calc(33.333%-1rem)] flex-shrink-0 bg-gray-50 dark:bg-slate-700/40 rounded-2xl p-5 border border-gray-100 dark:border-slate-700 shadow-sm hover:shadow-md transition-all duration-300 hover:-translate-y-1">
     <div className="flex items-start gap-4">
       <img 
         src={review.image} 
@@ -57,6 +61,8 @@ const ReviewCard = ({ review }) => (
 
 export default function CustomerReview() {
   const scrollContainer = useRef(null);
+  const [scrollDirection, setScrollDirection] = useState(1); // 1 for forward, -1 for backward
+  const [isModalOpen, setIsModalOpen] = useState(false);
   
   useEffect(() => {
     const container = scrollContainer.current;
@@ -64,32 +70,43 @@ export default function CustomerReview() {
 
     const interval = setInterval(() => {
       const { scrollLeft, scrollWidth, clientWidth } = container;
-      if (scrollLeft + clientWidth >= scrollWidth - 20) {
-        container.scrollTo({ left: 0, behavior: 'smooth' });
-      } else {
-        container.scrollBy({ left: container.clientWidth / 3, behavior: 'smooth' });
+      const maxScroll = scrollWidth - clientWidth;
+
+      // If we are at the end, switch to backward
+      if (scrollLeft >= maxScroll - 10) {
+        setScrollDirection(-1);
+      } 
+      // If we are at the start, switch to forward
+      else if (scrollLeft <= 10) {
+        setScrollDirection(1);
       }
-    }, 5000);
+
+      // Scroll based on current direction
+      if (scrollDirection === 1) {
+        container.scrollBy({ left: container.clientWidth / 3, behavior: 'smooth' });
+      } else {
+        container.scrollBy({ left: -(container.clientWidth / 3), behavior: 'smooth' });
+      }
+    }, 3000); // Faster interval for better visibility of movement
 
     return () => clearInterval(interval);
-  }, []);
+  }, [scrollDirection]);
 
   const handleScroll = (direction) => {
     if (scrollContainer.current) {
-      const { scrollLeft, scrollWidth, clientWidth } = scrollContainer.current;
-      if (direction === 1 && scrollLeft + clientWidth >= scrollWidth - 10) {
-         scrollContainer.current.scrollTo({ left: 0, behavior: 'smooth' });
-      } else {
-         scrollContainer.current.scrollBy({ left: direction * (scrollContainer.current.clientWidth / 3), behavior: 'smooth' });
-      }
+      scrollContainer.current.scrollBy({ left: direction * (scrollContainer.current.clientWidth / 3), behavior: 'smooth' });
     }
   };
 
   return (
-    <div className="bg-white dark:bg-slate-800 rounded-2xl p-6 shadow-md border border-gray-100 dark:border-slate-700 animate-fade-in-up hover:shadow-xl transition-shadow duration-300">
+    <>
+      <div className="bg-white dark:bg-slate-800 rounded-2xl p-6 shadow-md border border-gray-100 dark:border-slate-700 animate-fade-in-up hover:shadow-xl transition-all duration-300">
       <div className="flex items-center justify-between mb-4">
-        <h3 className="text-lg font-bold text-gray-900 dark:text-white">What Our Customers Say</h3>
-        <div className="flex items-center gap-2">
+          <h3 className="text-lg font-bold text-gray-900 dark:text-white">What Our Customers Say</h3>
+          <div className="flex items-center gap-2">
+            <Button variant="outline" size="sm" icon={Edit} onClick={() => setIsModalOpen(true)}>
+              Write a Review
+            </Button>
           <button onClick={() => handleScroll(-1)} className="p-1.5 hover:bg-gray-100 dark:hover:bg-slate-700 rounded-lg transition-colors">
             <ChevronLeft className="w-5 h-5 text-gray-600 dark:text-gray-300" />
           </button>
@@ -104,6 +121,34 @@ export default function CustomerReview() {
           <ReviewCard key={review.id} review={review} />
         ))}
       </div>
-    </div>
+      </div>
+
+      <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} title="Write a Review">
+        <form onSubmit={(e) => { e.preventDefault(); setIsModalOpen(false); }}>
+          <div className="space-y-4">
+            <Input type="text" placeholder="Your Name" required />
+            <Textarea placeholder="Write your review here..." required />
+            <div>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Rating</label>
+              <div className="flex items-center gap-1">
+                {[1, 2, 3, 4, 5].map((star) => (
+                  <button key={star} type="button" className="text-gray-300 hover:text-yellow-400 transition-colors">
+                    <Star className="w-6 h-6" />
+                  </button>
+                ))}
+              </div>
+            </div>
+            <div className="flex justify-end gap-3 pt-4">
+              <Button type="button" variant="secondary" onClick={() => setIsModalOpen(false)}>
+                Cancel
+              </Button>
+              <Button type="submit" variant="primary">
+                Submit Review
+              </Button>
+            </div>
+          </div>
+        </form>
+      </Modal>
+    </>
   );
 }

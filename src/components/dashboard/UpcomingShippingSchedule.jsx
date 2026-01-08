@@ -1,4 +1,4 @@
-import { Send } from 'lucide-react';
+import { Send, ArrowRight } from 'lucide-react';
 
 export default function UpcomingShippingSchedule() {
   const shipments = [
@@ -29,14 +29,19 @@ export default function UpcomingShippingSchedule() {
   ];
 
   return (
-    <div className="bg-white dark:bg-slate-800 rounded-2xl p-6 shadow-md border border-gray-100 dark:border-slate-700 hover:shadow-xl transition-shadow duration-300">
-      <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-6">Upcoming Shipping Schedule</h3>
+    <div className="bg-white dark:bg-slate-800 rounded-2xl p-5 shadow-md border border-gray-100 dark:border-slate-700 hover:shadow-xl transition-all duration-300 animate-fade-in-up">
+      <div className="flex items-center justify-between mb-4">
+        <h3 className="text-lg font-bold text-gray-900 dark:text-white">Upcoming Shipping Schedule</h3>
+        <button className="text-xs font-medium text-blue-600 dark:text-blue-400 hover:text-blue-700 flex items-center gap-1 transition-colors">
+          View All <ArrowRight size={14} />
+        </button>
+      </div>
 
-      <div className="space-y-4">
+      <div className="space-y-3">
         {shipments.map((shipment) => (
           <div 
             key={shipment.id}
-            className="flex items-center justify-between p-4 bg-gray-50 dark:bg-slate-700/50 rounded-xl hover:bg-gray-100 dark:hover:bg-slate-700 transition-colors cursor-pointer group"
+            className="flex items-center justify-between p-3 bg-gray-50 dark:bg-slate-700/30 rounded-xl hover:bg-white dark:hover:bg-slate-700 border border-transparent hover:border-gray-100 dark:hover:border-slate-600 hover:shadow-sm transition-all cursor-pointer group"
           >
             <div className="flex items-center gap-4 flex-1">
               <div className="w-12 h-12 bg-gradient-to-br from-blue-400 to-indigo-500 rounded-full flex items-center justify-center text-white font-semibold">
@@ -44,15 +49,15 @@ export default function UpcomingShippingSchedule() {
               </div>
               <div className="flex-1">
                 <div className="flex items-center gap-2 mb-1">
-                  <h4 className="font-semibold text-gray-900 dark:text-white">{shipment.name}</h4>
-                  <span className="text-sm text-blue-600">({shipment.items})</span>
+                  <h4 className="font-semibold text-sm text-gray-900 dark:text-white">{shipment.name}</h4>
+                  <span className="text-xs font-medium text-blue-600 bg-blue-50 dark:bg-blue-900/20 px-1.5 py-0.5 rounded">({shipment.items})</span>
                 </div>
                 <p className="text-xs text-gray-500 dark:text-gray-400 mb-1">will be shipping on {shipment.time}</p>
                 <p className="text-xs text-gray-600 dark:text-gray-300">{shipment.address}</p>
               </div>
             </div>
 
-            <button className="w-10 h-10 bg-indigo-600 rounded-full flex items-center justify-center hover:bg-indigo-700 transition-colors ml-4">
+            <button className="w-8 h-8 bg-indigo-600 rounded-lg flex items-center justify-center hover:bg-indigo-700 transition-colors ml-2 shadow-sm group-hover:scale-105">
               <Send className="w-5 h-5 text-white" />
             </button>
           </div>

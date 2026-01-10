@@ -1,8 +1,16 @@
 import { X, ChefHat, MapPin, Phone, Mail, Star, ShoppingBag, TrendingUp, AlertCircle, Calendar, Building, CheckCircle, DollarSign } from 'lucide-react';
+import { createPortal } from 'react-dom';
+import { useEffect, useState } from 'react';
 import Button from '../UI/Button';
 import Badge from '../UI/Badge';
 
 export default function KitchenDetailModal({ kitchen, onClose }) {
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
   if (!kitchen) return null;
 
   // Dummy performance data
@@ -20,10 +28,17 @@ export default function KitchenDetailModal({ kitchen, onClose }) {
     { id: "#ORD-1236", customer: "Amit Kumar", amount: "₹340", status: "pending", date: "Jan 8, 2026" },
   ];
 
-  return (
-    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4" onClick={onClose}>
+  if (!mounted || typeof document === 'undefined') return null;
+
+  return createPortal(
+    <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4">
+      {/* Backdrop with blur */}
       <div 
-        className="bg-white dark:bg-slate-800 rounded-2xl shadow-2xl max-w-5xl w-full max-h-[90vh] overflow-y-auto"
+        className="absolute inset-0 bg-black/60 backdrop-blur-sm transition-opacity" 
+        onClick={onClose}
+      />
+      <div 
+        className="relative bg-white dark:bg-slate-800 rounded-2xl shadow-2xl max-w-3xl w-full max-h-[90vh] overflow-y-auto animate-fade-in-up"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}

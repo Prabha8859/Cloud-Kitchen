@@ -3,7 +3,8 @@ import {
   Building2, 
   ChefHat, 
   ShoppingCart, 
-  Bike 
+  Bike,
+  Percent
 } from 'lucide-react';
 
 export const menuItems = [
@@ -41,5 +42,12 @@ export const menuItems = [
     path: '/delivery',
     icon: Bike,
     description: 'Rider management'
+  },
+  {
+    id: 'commission',
+    label: 'Commission',
+    path: '/commission',
+    icon: Percent,
+    description: 'Commission management'
   }
 ];

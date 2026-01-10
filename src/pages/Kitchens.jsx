@@ -12,6 +12,7 @@ export default function Kitchens() {
   const [filterStatus, setFilterStatus] = useState('all');
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedKitchen, setSelectedKitchen] = useState(null);
+  const [viewMode, setViewMode] = useState('list');
 
   // Dummy Kitchen Data
   const kitchens = [
@@ -144,6 +145,11 @@ export default function Kitchens() {
     // Add export logic here
   };
 
+  const handleClearFilters = () => {
+    setSearchTerm('');
+    setFilterStatus('all');
+  };
+
   return (
     <DashboardLayout>
       {/* Page Header */}
@@ -167,13 +173,17 @@ export default function Kitchens() {
         searchTerm={searchTerm}
         setSearchTerm={setSearchTerm}
         onExport={handleExport}
+        viewMode={viewMode}
+        setViewMode={setViewMode}
+        onClearFilters={handleClearFilters}
       />
 
       {/* Kitchens List Table */}
       {filteredKitchens.length > 0 ? (
         <KitchensListTable 
           kitchens={filteredKitchens} 
-          onViewDetails={handleViewDetails} 
+          onViewDetails={handleViewDetails}
+          viewMode={viewMode}
         />
       ) : (
         /* Empty State */

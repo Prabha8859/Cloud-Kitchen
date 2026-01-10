@@ -1,8 +1,15 @@
 import { X } from 'lucide-react';
 import PropTypes from 'prop-types';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
+import { createPortal } from 'react-dom';
 
 export default function Modal({ isOpen, onClose, title, children }) {
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
   useEffect(() => {
     const handleEsc = (event) => {
       if (event.key === 'Escape') {
@@ -16,15 +23,19 @@ export default function Modal({ isOpen, onClose, title, children }) {
     };
   }, [onClose]);
 
-  if (!isOpen) return null;
+  if (!isOpen || !mounted || typeof document === 'undefined') return null;
 
-  return (
+  return createPortal(
     <div 
-      className="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4 animate-fade-in-up"
-      onClick={onClose}
+      className="fixed inset-0 z-[9999] flex items-center justify-center p-4"
     >
       <div 
-        className="bg-white dark:bg-slate-800 rounded-2xl shadow-xl w-full max-w-md p-6 relative"
+        className="absolute inset-0 bg-black/60 backdrop-blur-sm transition-opacity"
+        onClick={onClose}
+      />
+      
+      <div 
+        className="relative bg-white dark:bg-slate-800 rounded-2xl shadow-xl w-full max-w-md p-6 animate-fade-in-up"
         onClick={(e) => e.stopPropagation()} // Prevent closing when clicking inside the modal
       >
         <div className="flex items-center justify-between mb-4 border-b border-gray-200 dark:border-slate-700 pb-4">
@@ -41,6 +52,7 @@ export default function Modal({ isOpen, onClose, title, children }) {
         </div>
       </div>
     </div>
+  , document.body
   );
 }
 

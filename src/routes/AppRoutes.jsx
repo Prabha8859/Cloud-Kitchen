@@ -8,10 +8,14 @@ import Orders from "../pages/Orders";
 import Societies from "../pages/Societies";
 import Subscriptions from "../pages/Subscriptions";
 import Delivery from "../pages/Delivery";
+import Commission from "../pages/Commission";
+import Profile from "../pages/Profile";
+// import BackgroundPattern from "../components/UI/BackgroundPattern";
 
 export default function AppRoutes() {
   return (
     <AuthProvider>
+      {/* <BackgroundPattern /> */}
       <Routes>
         <Route path="/login" element={<LoginPage />} />
         <Route path="/" element={<Navigate to="/dashboard" replace />} />
@@ -33,6 +37,16 @@ export default function AppRoutes() {
         } />
         <Route path="/delivery" element={
           <ProtectedRoute><Delivery /></ProtectedRoute>
+        } />
+        <Route path="/commission" element={
+          <ProtectedRoute>
+              <Commission />
+          </ProtectedRoute>
+        } />
+        <Route path="/profile" element={
+          <ProtectedRoute>
+            <Profile />
+          </ProtectedRoute>
         } />
         {/* Fallback route */}
         <Route path="*" element={<Navigate to="/dashboard" replace />} />

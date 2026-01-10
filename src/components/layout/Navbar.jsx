@@ -1,13 +1,20 @@
 import { Search, Bell, User, Menu, Settings } from 'lucide-react';
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../hooks/useAuth';
 import ThemeToggle from './ThemeToggle';
 import Input from '../UI/Input';
 
 export default function Navbar({ onMenuClick }) {
   const { user, logout } = useAuth();
+  const navigate = useNavigate();
   const [showNotifications, setShowNotifications] = useState(false);
   const [showProfile, setShowProfile] = useState(false);
+
+  const handleProfileClick = () => {
+    setShowProfile(false);
+    navigate('/profile');
+  };
 
   return (
     <nav className="bg-white dark:bg-slate-800 border-b border-gray-200 dark:border-slate-700 shadow-sm sticky top-0 z-40 transition-colors duration-200">
@@ -111,7 +118,10 @@ export default function Navbar({ onMenuClick }) {
                     <p className="text-sm text-gray-500 dark:text-gray-400">{user?.email || 'admin@foodhub.com'}</p>
                   </div>
                   <div className="py-2">
-                    <button className="w-full px-4 py-2 text-left text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-slate-700 transition-colors">
+                    <button 
+                      onClick={handleProfileClick}
+                      className="w-full px-4 py-2 text-left text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-slate-700 transition-colors"
+                    >
                       Profile Settings
                     </button>
                     <button className="w-full px-4 py-2 text-left text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-slate-700 transition-colors">

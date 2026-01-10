@@ -24,7 +24,7 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-100 dark:bg-slate-900 p-4">
+    <div className="flex items-center justify-center min-h-screen p-4">
       <div className="w-full max-w-md p-8 space-y-8 bg-white dark:bg-slate-800 rounded-2xl shadow-lg border border-gray-200 dark:border-slate-700">
         <div className="text-center">
           <div className="inline-block p-3 bg-gradient-to-br from-orange-500 to-pink-500 rounded-2xl mb-4">

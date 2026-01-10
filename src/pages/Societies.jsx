@@ -1,18 +1,21 @@
 import { useState } from 'react';
-import { Plus, Search } from 'lucide-react';
+import { Plus, MapPin, User, Building } from 'lucide-react';
 import DashboardLayout from '../components/layout/DashboardLayout';
 import PageHeader from '../components/UI/PageHeader';
 import Button from '../components/UI/Button';
-import Input from '../components/UI/Input';
+import Badge from '../components/UI/Badge';
 import SocietiesSummary from '../components/societies/SocietiesSummary';
 import SocietiesListTable from '../components/societies/SocietiesListTable';
-import SocietyDetailModal from '../components/societies/SocietyDetailModal';
-import AddSocietyModal from '../components/societies/AddSocietyModal';
+import SocietyDetailModal from '../components/kitchens/SocietyDetailModal';
+import AddSocietyModal from '../components/kitchens/AddSocietyModal';
+import CommonFilters from '../components/UI/CommonFilters';
 
 export default function Societies() {
   const [selectedSociety, setSelectedSociety] = useState(null);
   const [showAddModal, setShowAddModal] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
+  const [viewMode, setViewMode] = useState('list');
+  const [filterStatus, setFilterStatus] = useState('all');
   
   const [societies, setSocieties] = useState([
     { 
@@ -101,11 +104,24 @@ export default function Societies() {
     setShowAddModal(false);
   };
 
-  const filteredSocieties = societies.filter(society => 
-    society.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+  const handleClearFilters = () => {
+    setSearchTerm('');
+    setFilterStatus('all');
+  };
+
+  const handleDeleteSociety = (society) => {
+    console.log("Delete society:", society);
+  };
+
+  const filteredSocieties = societies.filter(society => {
+    const matchesSearch = society.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
     society.location.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    society.admin.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+    society.admin.toLowerCase().includes(searchTerm.toLowerCase());
+
+    const matchesStatus = filterStatus === 'all' || society.status === filterStatus;
+
+    return matchesSearch && matchesStatus;
+  });
 
   return (
     <DashboardLayout>
@@ -123,18 +139,25 @@ export default function Societies() {
       {/* Summary Cards */}
       <SocietiesSummary />
 
-      {/* Search Filter */}
-      <div className="mb-6 max-w-md">
-        <Input
-          icon={Search}
-          placeholder="Search by name, location or admin..."
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-        />
-      </div>
+      {/* Common Filters */}
+      <CommonFilters
+        searchTerm={searchTerm}
+        onSearchChange={(e) => setSearchTerm(e.target.value)}
+        filterStatus={filterStatus}
+        onFilterChange={(e) => setFilterStatus(e.target.value)}
+        onClearFilters={handleClearFilters}
+        viewMode={viewMode}
+        onViewChange={setViewMode}
+        placeholder="Search by name, location or admin..."
+      />
 
-      {/* Societies List Table */}
-      <SocietiesListTable societies={filteredSocieties} onViewDetails={handleViewDetails} />
+      {/* Content Area */}
+      <SocietiesListTable 
+        societies={filteredSocieties} 
+        onViewDetails={handleViewDetails} 
+        onDelete={handleDeleteSociety}
+        viewMode={viewMode} 
+      />
 
       {/* Society Detail Modal */}
       {selectedSociety && (

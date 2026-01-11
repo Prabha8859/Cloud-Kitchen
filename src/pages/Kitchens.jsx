@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useGetPendingKitchensQuery } from '../api/kitchens/kitchensApi';
 import { Plus, ChefHat } from 'lucide-react';
 import DashboardLayout from '../components/layout/DashboardLayout';
 import PageHeader from '../components/UI/PageHeader';
@@ -14,121 +15,42 @@ export default function Kitchens() {
   const [selectedKitchen, setSelectedKitchen] = useState(null);
   const [viewMode, setViewMode] = useState('list');
 
-  // Dummy Kitchen Data
-  const kitchens = [
-    {
-      id: 1,
-      name: "Spice Garden Kitchen",
-      owner: "Rajesh Kumar",
-      phone: "+91 98765 43210",
-      email: "rajesh@spicegarden.com",
-      society: "Green Valley Heights",
-      address: "Sector 62, Noida",
-      rating: 4.8,
-      totalOrders: 1250,
-      status: "active",
-      verified: true,
-      cuisine: "North Indian, Chinese",
-      joinedDate: "Jan 15, 2024"
-    },
-    {
-      id: 2,
-      name: "Mama's Kitchen",
-      owner: "Priya Sharma",
-      phone: "+91 98765 43211",
-      email: "priya@mamaskitchen.com",
-      society: "Lotus Apartments",
-      address: "Sector 50, Noida",
-      rating: 4.6,
-      totalOrders: 890,
-      status: "active",
-      verified: true,
-      cuisine: "South Indian, Continental",
-      joinedDate: "Feb 20, 2024"
-    },
-    {
-      id: 3,
-      name: "Punjab Da Dhaba",
-      owner: "Amarjeet Singh",
-      phone: "+91 98765 43212",
-      email: "amarjeet@punjabdhaba.com",
-      society: "Royal Gardens",
-      address: "Sector 75, Noida",
-      rating: 4.9,
-      totalOrders: 2100,
-      status: "active",
-      verified: true,
-      cuisine: "Punjabi, Tandoor",
-      joinedDate: "Dec 10, 2023"
-    },
-    {
-      id: 4,
-      name: "Healthy Bites",
-      owner: "Sneha Patel",
-      phone: "+91 98765 43213",
-      email: "sneha@healthybites.com",
-      society: "Sunshine Residency",
-      address: "Sector 45, Noida",
-      rating: 4.5,
-      totalOrders: 670,
-      status: "pending",
-      verified: false,
-      cuisine: "Healthy Food, Salads",
-      joinedDate: "Mar 5, 2024"
-    },
-    {
-      id: 5,
-      name: "Biryani House",
-      owner: "Mohammed Ali",
-      phone: "+91 98765 43214",
-      email: "ali@biryanihouse.com",
-      society: "Paradise Complex",
-      address: "Sector 18, Noida",
-      rating: 4.7,
-      totalOrders: 1560,
-      status: "active",
-      verified: true,
-      cuisine: "Biryani, Mughlai",
-      joinedDate: "Nov 8, 2023"
-    },
-    {
-      id: 6,
-      name: "Italian Corner",
-      owner: "Neha Gupta",
-      phone: "+91 98765 43215",
-      email: "neha@italiancorner.com",
-      society: "Silver Oak Society",
-      address: "Sector 92, Noida",
-      rating: 4.4,
-      totalOrders: 450,
-      status: "inactive",
-      verified: true,
-      cuisine: "Italian, Pizza",
-      joinedDate: "Jan 30, 2024"
-    },
-    {
-      id: 7,
-      name: "Desi Tadka",
-      owner: "Vikram Singh",
-      phone: "+91 98765 43216",
-      email: "vikram@desitadka.com",
-      society: "Blue Ridge Apartments",
-      address: "Sector 78, Noida",
-      rating: 4.3,
-      totalOrders: 320,
-      status: "pending",
-      verified: false,
-      cuisine: "North Indian, Street Food",
-      joinedDate: "Dec 28, 2024"
-    }
-  ];
+  const { data: apiKitchens = [], isLoading: loading, isError, error } = useGetPendingKitchensQuery();
+
+  // Accept multiple possible shapes from the API (array, {kitchens: []}, {data: {kitchens: []}})
+  const rawKitchens = Array.isArray(apiKitchens)
+    ? apiKitchens
+    : apiKitchens?.kitchens || apiKitchens?.data?.kitchens || [];
+
+  const kitchens = (rawKitchens || []).map((k) => {
+    const owner = k.ownerId || k.owner || {};
+    const society = typeof k.societyName === 'string' ? k.societyName : (k.society?.name || k.society || '—');
+    const cuisineArr = Array.isArray(k.cuisineType) ? k.cuisineType : (Array.isArray(k.cuisine) ? k.cuisine : []);
+
+    return {
+      id: k._id || k.id || '',
+      name: (k.name || k.kitchenName || '').toString(),
+      owner: (owner.fullName || owner.name || owner.ownerName || '—').toString(),
+      phone: (owner.mobile || owner.phone || owner.contact || '—').toString(),
+      email: (owner.email || '').toString(),
+      society: society.toString(),
+      address: (k.fullAddress || k.address || '').toString(),
+      rating: Number(k.rating || 0),
+      totalOrders: Number(k.totalOrders || k.total_orders || 0),
+      status: (k.status || '').toString().toLowerCase(),
+      verified: !!k.isVerified,
+      cuisine: cuisineArr.join(', '),
+      raw: k,
+    };
+  });
 
   // Filter kitchens based on status and search
+  const q = (searchTerm || '').toString().toLowerCase();
   const filteredKitchens = kitchens.filter(kitchen => {
-    const matchesStatus = filterStatus === 'all' || kitchen.status === filterStatus;
-    const matchesSearch = kitchen.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                          kitchen.society.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                          kitchen.owner.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesStatus = filterStatus === 'all' || (kitchen.status || '') === filterStatus;
+    const matchesSearch = q === '' || [kitchen.name, kitchen.society, kitchen.owner]
+      .map(v => (v || '').toString().toLowerCase())
+      .some(s => s.includes(q));
     return matchesStatus && matchesSearch;
   });
 
@@ -179,7 +101,11 @@ export default function Kitchens() {
       />
 
       {/* Kitchens List Table */}
-      {filteredKitchens.length > 0 ? (
+      {loading ? (
+        <div className="p-6">Loading kitchens...</div>
+      ) : isError ? (
+        <div className="p-6 text-center text-red-600">Failed to load kitchens: {error?.data?.message || error?.message || 'Unknown error'}</div>
+      ) : filteredKitchens.length > 0 ? (
         <KitchensListTable 
           kitchens={filteredKitchens} 
           onViewDetails={handleViewDetails}

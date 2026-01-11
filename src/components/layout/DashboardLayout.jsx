@@ -5,26 +5,34 @@ import Navbar from "./Navbar";
 import RouteLoader from "./RouteLoader";
 import { ChefHat, Utensils, ShoppingBag, Truck, Users, Home, Receipt, TrendingUp } from 'lucide-react';
 
+// Route-specific icons mapping moved outside component to avoid hook/linter warnings
+const routeIcons = {
+  '/dashboard': TrendingUp,
+  '/societies': Home,
+  '/kitchens': ChefHat,
+  '/orders': Receipt,
+  '/subscriptions': Users,
+  '/delivery': Truck,
+  '/commission': ShoppingBag
+};
+
 export default function DashboardLayout({ children }) {
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [LoadingIcon, setLoadingIcon] = useState(null);
+  // default to Utensils so RouteLoader always receives a component
+  const [loadingIcon, setLoadingIcon] = useState(Utensils);
   const location = useLocation();
 
-  // Route-specific icons mapping
-  const routeIcons = {
-    '/dashboard': TrendingUp,
-    '/societies': Home,
-    '/kitchens': ChefHat,
-    '/orders': Receipt,
-    '/subscriptions': Users,
-    '/delivery': Truck,
-    '/commission': ShoppingBag
-  };
 
   useEffect(() => {
-    // Set the icon based on current path
-    const IconComponent = routeIcons[location.pathname] || Utensils;
+    // Normalize path and find best matching route (handles /kitchens/123 etc.)
+    const normalize = (p) => (p || '').replace(/\/+$|(^$)/g, '') || '/';
+    const current = normalize(location.pathname);
+    const matched = Object.entries(routeIcons).find(([path]) => {
+      const np = normalize(path);
+      return current === np || current.startsWith(np + '/');
+    });
+    const IconComponent = matched ? matched[1] : Utensils;
     setLoadingIcon(() => IconComponent);
     
     // Trigger loading state
@@ -33,13 +41,13 @@ export default function DashboardLayout({ children }) {
     // Hide loader after delay
     const timer = setTimeout(() => {
       setIsLoading(false);
-    }, 1000); // 1.2 seconds for better animation completion
+    }, 1200); // 1.2 seconds for better animation completion
 
     return () => clearTimeout(timer);
   }, [location.pathname]);
 
   return (
-    <div className="flex h-screen bg-transparent transition-colors duration-300 overflow-hidden">
+    <div className="flex h-screen bg-gray-50 dark:bg-slate-900 transition-colors duration-300 overflow-hidden">
       <Sidebar 
         isMobileOpen={isMobileSidebarOpen}
         onClose={() => setIsMobileSidebarOpen(false)}
@@ -60,7 +68,7 @@ export default function DashboardLayout({ children }) {
           </main>
 
           {/* Route Loader Component */}
-          <RouteLoader icon={LoadingIcon} isVisible={isLoading} />
+          <RouteLoader icon={loadingIcon} isVisible={isLoading} />
         </div>
       </div>
 
